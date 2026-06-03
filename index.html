@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decay Lab Trading</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:    #0a0f07;
+  --bg2:   #0d1509;
+  --bg3:   #111c0a;
+  --acid:  #c8e020;
+  --acid2: #a4d007;
+  --cream: #f5f0e8;
+  --muted: #3d4e2e;
+  --muted2:#5a6f46;
+  --rule:  rgba(200,224,32,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100vh; }
+
+body {
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 20px 48px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background grid */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(200,224,32,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,224,32,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* Glow blob */
+body::after {
+  content: '';
+  position: fixed;
+  top: -100px; left: 50%; transform: translateX(-50%);
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(200,224,32,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.wrap {
+  width: 100%; max-width: 400px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 0;
+  position: relative; z-index: 1;
+}
+
+/* ── LOGO MARK ── */
+.logo-block {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 0;
+  margin-bottom: 20px;
+  animation: fadeUp 0.6s ease both;
+}
+.logo-ring { position: relative; }
+
+.wordmark {
+  text-align: center; margin-top: 10px;
+}
+.wordmark-decay {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px; letter-spacing: 6px;
+  color: var(--cream); line-height: 1;
+}
+.wordmark-lab {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; letter-spacing: 10px;
+  color: var(--acid); margin-top: 2px;
+}
+
+/* ── BIO ── */
+.bio {
+  text-align: center;
+  margin-bottom: 28px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+.bio-handle {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 3px;
+  color: var(--muted2); margin-bottom: 8px;
+}
+.bio-text {
+  font-size: 13px; color: var(--muted2);
+  line-height: 1.65; font-weight: 300;
+}
+.bio-text strong { color: var(--acid); font-weight: 500; }
+
+/* ── STATS BAR ── */
+.stats {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 1px; background: var(--rule);
+  border: 1px solid var(--rule);
+  width: 100%; margin-bottom: 28px;
+  animation: fadeUp 0.6s 0.15s ease both;
+}
+.stat { background: var(--bg2); padding: 12px 6px; text-align: center; }
+.stat-n {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 1px;
+  color: var(--acid); line-height: 1; margin-bottom: 2px;
+}
+.stat-l {
+  font-family: 'DM Mono', monospace;
+  font-size: 7px; letter-spacing: 1px;
+  color: var(--muted); line-height: 1.3;
+}
+
+/* ── LINKS ── */
+.links {
+  width: 100%; display: flex;
+  flex-direction: column; gap: 8px;
+}
+
+.link-item {
+  display: flex; align-items: center;
+  background: var(--bg2);
+  border: 1px solid rgba(200,224,32,0.08);
+  padding: 0;
+  text-decoration: none;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.15s;
+  position: relative;
+}
+.link-item:hover {
+  border-color: rgba(200,224,32,0.3);
+  transform: translateY(-1px);
+}
+.link-item:active { transform: translateY(0); }
+
+.link-item.primary {
+  border-color: var(--acid);
+  background: rgba(200,224,32,0.05);
+}
+.link-item.primary:hover {
+  background: rgba(200,224,32,0.08);
+  border-color: var(--acid);
+}
+
+.link-accent {
+  width: 4px; align-self: stretch;
+  flex-shrink: 0;
+}
+.link-item.primary .link-accent { background: var(--acid); }
+.link-item.secondary .link-accent { background: var(--muted2); }
+.link-item.social .link-accent { background: var(--muted); }
+
+.link-icon {
+  width: 44px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+  border-right: 1px solid rgba(200,224,32,0.06);
+}
+
+.link-body { flex: 1; padding: 12px 14px; }
+.link-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 600;
+  color: var(--cream); margin-bottom: 2px;
+  line-height: 1.2;
+}
+.link-item.primary .link-title { color: var(--acid); }
+.link-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 1px;
+  color: var(--muted2);
+}
+
+.link-arrow {
+  padding: 0 14px;
+  font-size: 14px; color: var(--muted);
+  flex-shrink: 0;
+  transition: color 0.2s, transform 0.2s;
+}
+.link-item:hover .link-arrow { color: var(--acid); transform: translateX(2px); }
+.link-item.primary .link-arrow { color: var(--acid); }
+
+/* section label inside links */
+.link-section-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  color: var(--muted);
+  width: 100%; text-align: left;
+  margin-top: 10px; margin-bottom: 4px;
+  padding-left: 2px;
+}
+
+/* ── TAGLINE ── */
+.tagline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px; letter-spacing: 5px;
+  color: rgba(200,224,32,0.2);
+  margin-top: 32px; text-align: center;
+  animation: fadeUp 0.6s 0.5s ease both;
+}
+
+/* ── FOOTER ── */
+.footer {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 2px;
+  color: var(--muted); margin-top: 12px;
+  text-align: center; line-height: 2;
+  animation: fadeUp 0.6s 0.55s ease both;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.links .link-section-lbl:nth-child(1) { animation: fadeUp 0.5s 0.2s ease both; }
+.links .link-item:nth-child(2)  { animation: fadeUp 0.5s 0.25s ease both; }
+.links .link-item:nth-child(3)  { animation: fadeUp 0.5s 0.3s ease both; }
+.links .link-item:nth-child(4)  { animation: fadeUp 0.5s 0.32s ease both; }
+.links .link-section-lbl:nth-child(5) { animation: fadeUp 0.5s 0.35s ease both; }
+.links .link-item:nth-child(6)  { animation: fadeUp 0.5s 0.37s ease both; }
+.links .link-item:nth-child(7)  { animation: fadeUp 0.5s 0.39s ease both; }
+.links .link-item:nth-child(8)  { animation: fadeUp 0.5s 0.41s ease both; }
+.links .link-item:nth-child(9)  { animation: fadeUp 0.5s 0.43s ease both; }
+.links .link-section-lbl:nth-child(10) { animation: fadeUp 0.5s 0.45s ease both; }
+.links .link-item:nth-child(11) { animation: fadeUp 0.5s 0.47s ease both; }
+.links .link-item:nth-child(12) { animation: fadeUp 0.5s 0.49s ease both; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- LOGO -->
+  <div class="logo-block">
+    <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- outer ghost ring -->
+      <circle cx="50" cy="50" r="44" stroke="#c8e020" stroke-width="0.8" fill="none" stroke-opacity="0.1"/>
+      <!-- mid ring -->
+      <circle cx="50" cy="50" r="37" stroke="#c8e020" stroke-width="1.2" fill="none" stroke-opacity="0.2"/>
+      <!-- glow halo -->
+      <circle cx="50" cy="50" r="31" stroke="#c8e020" stroke-width="9" fill="none" stroke-opacity="0.07"/>
+      <!-- main ring -->
+      <circle cx="50" cy="50" r="31" stroke="#c8e020" stroke-width="2.2" fill="none" stroke-opacity="0.9"/>
+      <!-- inner tint -->
+      <circle cx="50" cy="50" r="31" fill="#c8e020" fill-opacity="0.04"/>
+      <!-- sine wave glow -->
+      <path d="M19 50 Q26 35 33 50 Q38 65 50 50 Q62 35 67 50 Q74 65 81 50"
+            stroke="#c8e020" stroke-width="9" fill="none"
+            stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.1"/>
+      <!-- sine wave -->
+      <path d="M19 50 Q26 35 33 50 Q38 65 50 50 Q62 35 67 50 Q74 65 81 50"
+            stroke="#c8e020" stroke-width="3" fill="none"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="wordmark">
+      <div class="wordmark-decay">DECAY</div>
+      <div class="wordmark-lab">LAB™</div>
+    </div>
+  </div>
+
+  <!-- BIO -->
+  <div class="bio">
+    <div class="bio-handle">@DECAYLABTRADING</div>
+    <div class="bio-text">
+      Selling XSP put credit spreads for weekly income.<br>
+      <strong>$2K → $7K</strong> in 7 months. Fully documented.<br>
+      Faceless. Real trades. No guru nonsense.
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="stat-n">75%</div><div class="stat-l">WIN RATE</div></div>
+    <div class="stat"><div class="stat-n">7 MO</div><div class="stat-l">DOCUMENTED</div></div>
+    <div class="stat"><div class="stat-n">$800</div><div class="stat-l">WEEKLY TARGET</div></div>
+  </div>
+
+  <!-- LINKS -->
+  <div class="links">
+
+    <!-- COURSE -->
+    <div class="link-section-lbl">THE SYSTEM</div>
+
+    <a href="https://gumroad.com" target="_blank" class="link-item primary">
+      <div class="link-accent"></div>
+      <div class="link-icon">📖</div>
+      <div class="link-body">
+        <div class="link-title">The SVIS Playbook — $97</div>
+        <div class="link-sub">COMPLETE 9-MODULE SYSTEM · INSTANT ACCESS</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <a href="https://gumroad.com" target="_blank" class="link-item secondary">
+      <div class="link-accent"></div>
+      <div class="link-icon">📡</div>
+      <div class="link-body">
+        <div class="link-title">Desk Membership — $47/mo</div>
+        <div class="link-sub">TRADE ALERTS + WEEKLY Q&A</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <a href="https://gumroad.com" target="_blank" class="link-item secondary">
+      <div class="link-accent"></div>
+      <div class="link-icon">⚗️</div>
+      <div class="link-body">
+        <div class="link-title">Lab Membership — $97/mo</div>
+        <div class="link-sub">LIVE 0-DTE SESSIONS · WATCH EVERY ENTRY</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <!-- SOCIAL -->
+    <div class="link-section-lbl">FOLLOW THE BUILD</div>
+
+    <a href="https://tiktok.com/@decaylabtrading" target="_blank" class="link-item social">
+      <div class="link-accent"></div>
+      <div class="link-icon">🎵</div>
+      <div class="link-body">
+        <div class="link-title">TikTok</div>
+        <div class="link-sub">@DECAYLABTRADING · DAILY TRADE CONTENT</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <a href="https://instagram.com/decaylabtrading" target="_blank" class="link-item social">
+      <div class="link-accent"></div>
+      <div class="link-icon">📸</div>
+      <div class="link-body">
+        <div class="link-title">Instagram</div>
+        <div class="link-sub">@DECAYLABTRADING · CHARTS + P&L UPDATES</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <a href="https://x.com/decaylabtrading" target="_blank" class="link-item social">
+      <div class="link-accent"></div>
+      <div class="link-icon">𝕏</div>
+      <div class="link-body">
+        <div class="link-title">X (Twitter)</div>
+        <div class="link-sub">@DECAYLABTRADING · LIVE TRADE UPDATES</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <a href="https://youtube.com/@decaylabtrading" target="_blank" class="link-item social">
+      <div class="link-accent"></div>
+      <div class="link-icon">▶</div>
+      <div class="link-body">
+        <div class="link-title">YouTube</div>
+        <div class="link-sub">@DECAYLABTRADING · FULL BREAKDOWNS</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <!-- COMMUNITY -->
+    <div class="link-section-lbl">COMMUNITY</div>
+
+    <a href="https://discord.gg" target="_blank" class="link-item secondary">
+      <div class="link-accent"></div>
+      <div class="link-icon">💬</div>
+      <div class="link-body">
+        <div class="link-title">Discord — Decay Lab</div>
+        <div class="link-sub">MEMBERS ONLY · ALERTS + DISCUSSION</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+  </div>
+
+  <div class="tagline">LET THETA WORK.</div>
+  <div class="footer">
+    DECAY LAB TRADING™ · DECAYLABTRADING@GMAIL.COM<br>
+    NOT FINANCIAL ADVICE · FOR EDUCATIONAL PURPOSES ONLY
+  </div>
+
+</div>
+
+</body>
+</html>
